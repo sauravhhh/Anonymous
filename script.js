@@ -1,6 +1,9 @@
-const socket = io("https://anonymous-2dqg.onrender.com");
+const socket = io("https://YOUR_BACKEND_URL");
 
 let secretKey = "chat-secret";
+
+const chatBox = document.getElementById("chat-box");
+const emojiPicker = document.getElementById("emoji-picker");
 
 function encrypt(text) {
   return btoa(text + secretKey);
@@ -14,17 +17,20 @@ function decrypt(text) {
 function startChat() {
   const gender = document.getElementById("gender").value;
   const preference = document.getElementById("preference").value;
+
+  document.getElementById("status").innerText = "Looking for stranger...";
   socket.emit("join", { gender, preference });
 }
 
 socket.on("matched", () => {
-  document.getElementById("status").innerText = "Stranger connected!";
+  document.getElementById("status").innerText = "Stranger Connected!";
 });
 
 socket.on("receive_message", (data) => {
   const div = document.createElement("div");
   div.innerText = "Stranger: " + decrypt(data);
-  document.getElementById("chat-box").appendChild(div);
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
 });
 
 socket.on("typing", () => {
@@ -35,7 +41,7 @@ socket.on("typing", () => {
 });
 
 socket.on("stranger_disconnected", () => {
-  document.getElementById("status").innerText = "Stranger disconnected";
+  document.getElementById("status").innerText = "Stranger disconnected.";
 });
 
 socket.on("rematch", () => {
@@ -44,13 +50,15 @@ socket.on("rematch", () => {
 
 function sendMessage() {
   const input = document.getElementById("message");
+
   if (input.value.trim()) {
     socket.emit("send_message", encrypt(input.value));
 
     const div = document.createElement("div");
     div.innerText = "You: " + input.value;
-    document.getElementById("chat-box").appendChild(div);
+    chatBox.appendChild(div);
 
+    chatBox.scrollTop = chatBox.scrollHeight;
     input.value = "";
   }
 }
@@ -62,3 +70,12 @@ function sendTyping() {
 function nextStranger() {
   socket.emit("next");
 }
+
+function toggleEmoji() {
+  emojiPicker.style.display =
+    emojiPicker.style.display === "none" ? "block" : "none";
+}
+
+emojiPicker.addEventListener("emoji-click", event => {
+  document.getElementById("message").value += event.detail.unicode;
+});
