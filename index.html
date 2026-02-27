@@ -1,40 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anonymous Pro Chat</title>
+
   <link rel="stylesheet" href="style.css">
+
   <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+
+  <!-- Emoji Picker CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js" type="module"></script>
 </head>
+
 <body>
 
 <div class="chat-container">
 
-  <h2>Anonymous Pro Chat</h2>
+  <h2>Anonymous Chat</h2>
 
-  <select id="gender">
-    <option value="male">Male</option>
-    <option value="female">Female</option>
-  </select>
+  <!-- Gender Selection -->
+  <div class="selectors">
+    <select id="gender">
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+      <option value="any">Any</option>
+    </select>
 
-  <select id="preference">
-    <option value="any">Any</option>
-    <option value="male">Male</option>
-    <option value="female">Female</option>
-  </select>
+    <select id="preference">
+      <option value="any">Talk With Any</option>
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
 
-  <button onclick="startChat()">Start</button>
+    <button onclick="startChat()">Start</button>
+  </div>
 
-  <div id="status"></div>
+  <div id="status">Not Connected</div>
   <div id="typing"></div>
 
   <div id="chat-box"></div>
 
-  <input type="text" id="message" placeholder="Type message..." oninput="sendTyping()" />
-  <button onclick="sendMessage()">Send</button>
-  <button onclick="nextStranger()">Next</button>
+  <!-- Chat Input Section -->
+  <div class="input-area">
+    <button onclick="toggleEmoji()">😊</button>
+    <input type="text" id="message" placeholder="Type message..." oninput="sendTyping()" />
+    <button onclick="sendMessage()">Send</button>
+    <button onclick="nextStranger()">Next</button>
+  </div>
+
+  <emoji-picker id="emoji-picker" style="display:none;"></emoji-picker>
 
 </div>
 
 <script src="script.js"></script>
 </body>
-</html>
+  </html>
